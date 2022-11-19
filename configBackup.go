@@ -205,7 +205,8 @@ func (config *configurationFile) loadConfig(verboseFlag bool, debugFlag bool) er
 func readSection(viper *viper.Viper, filename string, sectionKey string) []map[string]string {
 	if viper.IsSet(sectionKey) {
 		section := make([]interface{}, 0)
-		if viper.IsSet(sectionKey + ".1") {
+		switch viper.Get(sectionKey).(type) {
+		case map[string]interface{}:
 			// Have we issued our global warning before; if not, do so
 			if !oldBackupFileFormat {
 				oldBackupFileFormat = true
@@ -221,7 +222,7 @@ func readSection(viper *viper.Viper, filename string, sectionKey string) []map[s
 					break
 				}
 			}
-		} else {
+		case []interface{}:
 			// Array
 			section = viper.Get(sectionKey).([]interface{})
 		}
